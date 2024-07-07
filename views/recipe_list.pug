@@ -1,0 +1,8 @@
+extends layout 
+
+block content  
+  main.recipes
+    h1= title
+    .recipe_list
+      for recipe in recipe_list
+        a(href=recipe.url) #{recipe.name}

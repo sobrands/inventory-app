@@ -69,22 +69,26 @@ nav a:hover {
   opacity: 70%;
 }
 
-.film-simulations {
+.film-simulations,
+.recipes {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 }
 
-.film-simulations a {
+.film-simulations a,
+.recipes a {
   font-size: 1.1rem;
 }
 
-.film-simulations a:hover {
+.film-simulations a:hover,
+.recipes a:hover {
   text-decoration: underline;
   text-underline-offset: 0.3rem;
 }
 
-.simulations {
+.simulations,
+.recipe_list {
   display: flex;
   gap: 2.3rem;
   flex-wrap: wrap;
