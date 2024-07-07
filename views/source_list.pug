@@ -1,0 +1,8 @@
+extends layout 
+
+block content  
+  main.sources
+    h1= title
+    .source_list
+      for source in source_list
+        a(href=source.url) #{source.name}

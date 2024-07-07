@@ -9,6 +9,7 @@ require('dotenv').config();
 const indexRouter = require('./routes/index');
 const filmSimsRouter = require("./routes/film-sims");
 const recipeRouter = require("./routes/recipes");
+const sourceRouter = require("./routes/source");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/film-sims', filmSimsRouter);
 app.use('/recipes', recipeRouter);
+app.use('/sources', sourceRouter);
 
 // Set up Mongoose
 mongoose.set("strictQuery", false);

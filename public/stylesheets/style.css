@@ -70,25 +70,29 @@ nav a:hover {
 }
 
 .film-simulations,
-.recipes {
+.recipes,
+.sources {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 }
 
 .film-simulations a,
-.recipes a {
+.recipes a,
+.sources a {
   font-size: 1.1rem;
 }
 
 .film-simulations a:hover,
-.recipes a:hover {
+.recipes a:hover,
+.sources a:hover {
   text-decoration: underline;
   text-underline-offset: 0.3rem;
 }
 
 .simulations,
-.recipe_list {
+.recipe_list,
+.source_list {
   display: flex;
   gap: 2.3rem;
   flex-wrap: wrap;
