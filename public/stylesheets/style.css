@@ -21,7 +21,9 @@ nav {
   gap: 2.5rem;
   justify-content: center;
 
+  padding-bottom: 1rem;
   margin: 2rem 0;
+  border-bottom: 1px solid black;
 }
 
 a {
@@ -37,14 +39,14 @@ nav a {
   background-position-x: 50%;
   background-position-y: 100%;
   background-repeat: no-repeat;
-  transition: background-size 0.3s ease-in-out;
+  transition: background-size 0.2s ease-in-out;
 }
 
 nav a:hover {
   background-size: 100% 0.1rem;
 }
 
-main {
+.home {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,17 +54,38 @@ main {
   gap: 0.8rem;
 }
 
-main a {
+.home a {
   background-color: rgb(52, 117, 214);
   color: white;
   padding: 0.8rem;
   border-radius: 10px;
 }
 
-main a:hover {
+.home a:hover {
   opacity: 90%;
 }
 
-main a:active {
+.home a:active {
   opacity: 70%;
+}
+
+.film-simulations {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.film-simulations a {
+  font-size: 1.1rem;
+}
+
+.film-simulations a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
+.simulations {
+  display: flex;
+  gap: 2.3rem;
+  flex-wrap: wrap;
 }

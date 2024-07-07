@@ -1,0 +1,8 @@
+extends layout 
+
+block content  
+  main.film-simulations
+    h1= title
+    .simulations
+      for sim in filmsim_list
+        a(href=sim.url) #{sim.name}
