@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  main.recipe_detail
+  main.recipe-detail
     h1= title
     .film-sim
       h3 Film Simulation
@@ -16,5 +16,22 @@ block content
       .hs-curve
         p Highlight: #{recipe.settings.highlight > 0 ? "+" + recipe.settings.highlight : recipe.settings.highlight}
         p Shadow: #{recipe.settings.shadow > 0 ? "+" + recipe.settings.shadow : recipe.settings.shadow}
+      .white-balance
+        p White Balance: #{recipe.settings.white_balance.style}
+        p R:#{recipe.settings.white_balance.shift.red > 0 ? "+" + recipe.settings.white_balance.shift.red : recipe.settings.white_balance.shift.red}      
+          | &nbsp;B:#{recipe.settings.white_balance.shift.blue > 0 ? "+" + recipe.settings.white_balance.shift.blue : recipe.settings.white_balance.shift.blue}
       .noise-settings
-        
+        p Sharpness: #{recipe.settings.sharpness > 0 ? "+" + recipe.settings.sharpness : recipe.settings.sharpness}
+        p Noise Reduction: #{recipe.settings.noise_reduction > 0 ? "+" + recipe.settings.noise_reduction : recipe.settings.noise_reduction}
+        p Clarity: #{recipe.settings.clarity > 0 ? "+" + recipe.settings.clarity : recipe.settings.clarity}
+      p ISO: Up to #{recipe.settings.iso}
+      p Exposure Comp: #{recipe.settings.exposure_compensation.min} to #{recipe.settings.exposure_compensation.max}
+    .source
+      h3 Source
+      a(href=recipe.source.url) #{recipe.source.name}
+    .reference
+      h3 Reference Link
+      if recipe.reference_url
+        a(href=recipe.reference_url) Read More
+      else
+        p No reference link

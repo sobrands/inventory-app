@@ -73,7 +73,7 @@ nav a:hover {
 
 .film-simulations,
 .recipes,
-.recipe_detail,
+.recipe-detail,
 .sources {
   display: flex;
   flex-direction: column;
@@ -102,18 +102,21 @@ nav a:hover {
 }
 
 .settings,
-.film-sim {
+.film-sim,
+.source,
+.reference {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
 
-.film-sim a:hover {
+.recipe-detail a:hover {
   text-decoration: underline;
 }
 
 .color-fx,
 .hs-curve,
+.white-balance,
 .noise-settings {
   display: flex;
   gap: 1.5rem;
