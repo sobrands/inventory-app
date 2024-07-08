@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  main.recipe_detail
+    h1= title
+    .film-sim
+      h3 Film Simulation
+      a(href=recipe.film_sim.url) #{recipe.film_sim.name}
+    .settings
+      h3 Settings
+      p Dynamic Range: #{recipe.settings.dynamic_range}
+      p Grain: #{recipe.settings.grain}
+      .color-fx
+        p Color Chrome FX: #{recipe.settings.ccfx}
+        p Color Chrome FX Blue: #{recipe.settings.ccfx_blue}
+      .hs-curve
+        p Highlight: #{recipe.settings.highlight > 0 ? "+" + recipe.settings.highlight : recipe.settings.highlight}
+        p Shadow: #{recipe.settings.shadow > 0 ? "+" + recipe.settings.shadow : recipe.settings.shadow}
+      .noise-settings
+        

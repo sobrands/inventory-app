@@ -4,6 +4,8 @@
 }
 
 body {
+  max-width: 1500px;
+  margin: auto;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -71,6 +73,7 @@ nav a:hover {
 
 .film-simulations,
 .recipes,
+.recipe_detail,
 .sources {
   display: flex;
   flex-direction: column;
@@ -96,4 +99,22 @@ nav a:hover {
   display: flex;
   gap: 2.3rem;
   flex-wrap: wrap;
+}
+
+.settings,
+.film-sim {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.film-sim a:hover {
+  text-decoration: underline;
+}
+
+.color-fx,
+.hs-curve,
+.noise-settings {
+  display: flex;
+  gap: 1.5rem;
 }

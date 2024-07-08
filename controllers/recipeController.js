@@ -11,3 +11,15 @@ exports.index = asyncHandler(async (req, res, next) => {
     recipe_list: recipes
   });
 });
+
+exports.detail = asyncHandler(async (req, res, next) => {
+  const recipe = await Recipe
+    .findById(req.params.id)
+    .populate("film_sim")
+    .populate("source", "name");
+
+  res.render("recipe_detail", {
+    title: recipe.name,
+    recipe: recipe
+  });
+});
