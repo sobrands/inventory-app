@@ -8,7 +8,7 @@ const FilmSimSchema = new Schema({
 
 // Virtual for URL
 FilmSimSchema.virtual("url").get(function () {
-  return `/film-sim/${this._id}`;
+  return `/film-sims/${this._id}`;
 });
 
 // Export model
