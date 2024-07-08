@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  main.recipes
+    h1 Recipes from #{source.name}
+    p #{source.description}
+    if recipe_list.length > 0
+      .recipe_list
+        for recipe in recipe_list
+          a(href=recipe.url) #{recipe.name}
+    else
+      p No recipes currently.
