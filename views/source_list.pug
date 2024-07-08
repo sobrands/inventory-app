@@ -3,6 +3,9 @@ extends layout
 block content  
   main.sources
     h1= title
-    .source_list
-      for source in source_list
-        a(href=source.url) #{source.name}
+    if source_list.length > 0
+      .source_list
+        for source in source_list
+          a(href=source.url) #{source.name}
+    else
+      p No sources currently.

@@ -3,6 +3,9 @@ extends layout
 block content  
   main.film-simulations
     h1= title
-    .simulations
-      for sim in filmsim_list
-        a(href=sim.url) #{sim.name}
+    if filmsim_list.length > 0
+      .simulations
+        for sim in filmsim_list
+          a(href=sim.url) #{sim.name}
+    else
+      p No Film Simulations currently.
