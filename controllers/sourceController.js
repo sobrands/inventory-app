@@ -15,8 +15,10 @@ exports.index = asyncHandler(async (req, res, next) => {
 
 // Display recipes belonging to source
 exports.detail = asyncHandler(async (req, res, next) => {
-  const source = await Source.findById(req.params.id);
-  const recipesBySource = await Recipe.find({ source: req.params.id }, "name").sort({ name: 1 }).exec();
+  const [source, recipesBySource] = await Promise.all([
+    Source.findById(req.params.id),
+    Recipe.find({ source: req.params.id }, "name").sort({ name: 1 }).exec()
+  ]);
 
   res.render("source_detail", {
     title: source.name,
