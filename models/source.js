@@ -9,7 +9,7 @@ const SourceSchema = new Schema({
 
 // Virtual for URL
 SourceSchema.virtual("url").get(function () {
-  return `/sources/${this._id}`;
+  return `/source/${this._id}`;
 });
 
 // Export model

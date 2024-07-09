@@ -25,3 +25,10 @@ exports.detail = asyncHandler(async (req, res, next) => {
     recipe_list: recipesByFilmSim
   });
 });
+
+// Display form to create Film Simulation
+exports.createGet = (req, res, next) => {
+  console.log("here");
+  res.send(200);
+  // res.render("filmsim_form", { title: "Create Film Simulation" });
+};
