@@ -121,3 +121,13 @@ nav a:hover {
   display: flex;
   gap: 1.5rem;
 }
+
+a.create {
+  color: grey;
+  font-size: 0.9rem;
+  width: fit-content;
+}
+
+a.create:hover {
+  text-underline-offset: 0.1rem;
+}
