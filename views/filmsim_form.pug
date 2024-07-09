@@ -1,0 +1,16 @@
+extends layout 
+
+block content
+  main.form
+    h1= title
+    form(method="POST")
+      .form-input
+        label(for="name") Name:
+        input#name(type="text" name="name" minlength="1" required
+          value=(film_sim === undefined ? "" : film_sim.name))
+      button(type="submit") Submit
+    
+    if errors
+      ul
+        for error in errors
+          li!= error.msg

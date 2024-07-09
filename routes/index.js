@@ -15,6 +15,9 @@ router.get('/', function(req, res, next) {
 // Get create form
 router.get("/film-sim/create", filmSimController.createGet);
 
+// Submit create form
+router.post("/film-sim/create", filmSimController.createPost);
+
 // Get Film Sim list
 router.get("/film-sims", filmSimController.index);
 

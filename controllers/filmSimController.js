@@ -28,7 +28,44 @@ exports.detail = asyncHandler(async (req, res, next) => {
 
 // Display form to create Film Simulation
 exports.createGet = (req, res, next) => {
-  console.log("here");
-  res.send(200);
-  // res.render("filmsim_form", { title: "Create Film Simulation" });
+  res.render("filmsim_form", { title: "Create Film Simulation" });
 };
+
+// Handle form submission
+exports.createPost = [
+  // Validate and sanitize
+  body("name", "Genre name must be at least 1 character")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  
+  // Process request after validation and sanitization
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    // Create new film-sim object
+    const filmSim = new FilmSim({ name: req.body.name })
+
+    if (!errors.isEmpty()) {
+      // Render form again with sanitized values/error messages
+      res.render("filmsim_form", {
+        title: "Create Film Simulation",
+        film_sim: filmSim,
+        errors: errors.array()
+      });
+      return;
+    } else {
+      // Check if filmsim already exists
+      const filmSimExists = await FilmSim.findOne({ name: req.body.name })
+        .collation({ locale: "en", strength: 2 })
+        .exec();
+      
+      if (filmSimExists) {
+        res.redirect(filmSimExists.url);
+      } else {
+        await filmSim.save();
+        res.redirect(filmSim.url);
+      }
+    }
+  })
+];
