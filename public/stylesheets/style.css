@@ -28,6 +28,10 @@ nav {
   border-bottom: 1px solid black;
 }
 
+li {
+  color: red;
+}
+
 a {
   text-decoration: none;
   color: black;
@@ -149,6 +153,10 @@ form {
 
 .form-input input {
   padding: 2px;
+}
+
+.form-input textarea {
+  padding: 6px;
 }
 
 form button {

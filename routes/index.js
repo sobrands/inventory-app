@@ -46,10 +46,28 @@ router.get("/recipe/:id", recipeController.detail);
 
 // SOURCE ROUTES //
 
+// Get create form
+router.get("/source/create", sourceController.createGet);
+
+// Submit create form
+router.post("/source/create", sourceController.createPost);
+
 // Get list of sources
 router.get("/sources", sourceController.index);
 
 // Get individual source detail
 router.get("/source/:id", sourceController.detail);
+
+// Get update form
+router.get("/source/:id/update", sourceController.updateGet);
+
+// Submit update form
+router.post("/source/:id/update", sourceController.updatePost);
+
+// Get delete form
+router.get("/source/:id/delete", sourceController.deleteGet);
+
+// Submit delete form
+router.post("/source/:id/delete", sourceController.deletePost);
 
 module.exports = router;
