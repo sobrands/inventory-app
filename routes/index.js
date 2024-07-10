@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const filmSimController = require("../controllers/filmSimController")
+const filmSimController = require("../controllers/filmSimController");
 const recipeController = require("../controllers/recipeController");
 const sourceController = require("../controllers/sourceController");
 
@@ -22,7 +22,19 @@ router.post("/film-sim/create", filmSimController.createPost);
 router.get("/film-sims", filmSimController.index);
 
 // Get recipes per film sim
-router.get("/film-sim/:id", filmSimController.detail)
+router.get("/film-sim/:id", filmSimController.detail);
+
+// Get update form
+router.get("/film-sim/:id/update", filmSimController.updateGet);
+
+// Submit update form
+router.post("/film-sim/:id/update", filmSimController.updatePost);
+
+// Get delete form
+router.get("/film-sim/:id/delete", filmSimController.deleteGet);
+
+// Submit delete form
+router.post("/film-sim/:id/delete", filmSimController.deletePost);
 
 // RECIPE ROUTES //
 

@@ -75,7 +75,8 @@ nav a:hover {
 .recipes,
 .recipe-detail,
 .sources,
-.form {
+.form,
+.delete {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
@@ -89,7 +90,8 @@ nav a:hover {
 
 .film-simulations a:hover,
 .recipes a:hover,
-.sources a:hover {
+.sources a:hover,
+.delete a:hover {
   text-decoration: underline;
   text-underline-offset: 0.3rem;
 }
@@ -165,4 +167,14 @@ form button:hover {
 
 form button:active {
   opacity: 70%;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-buttons a {
+  color: rgb(136, 126, 126);
+  font-size: 1rem;
 }

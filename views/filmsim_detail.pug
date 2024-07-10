@@ -9,4 +9,7 @@ block content
           a(href=recipe.url) #{recipe.name}
     else
       p No recipes currently.
+    .action-buttons
+      a(href=`/film-sim/${film_sim._id}/update`) Update Film Simulation
+      a(href=`/film-sim/${film_sim._id}/delete`) Delete Film Simulation
   
