@@ -124,7 +124,8 @@ nav a:hover {
 .color-fx,
 .hs-curve,
 .white-balance,
-.noise-settings {
+.noise-settings,
+.exp-comp {
   display: flex;
   gap: 1.5rem;
 }

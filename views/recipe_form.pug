@@ -1,0 +1,129 @@
+extends layout
+
+block content
+  main.form
+    h1 #{title}
+    form(method="POST")
+      .form-input
+        label(for="film_sim") Film Simulation:
+        select#film_sim(name="film_sim" required)
+          option(value="") --Please select a Film Simulation--
+          for filmsim in filmsim_list
+            if recipe
+              if filmsim._id.toString() === recipe.film_sim._id.toString()
+                option(value=filmsim._id selected) #{filmsim.name}
+              else
+                option(value=filmsim._id) #{filmsim.name}
+            else
+              option(value=filmsim._id) #{filmsim.name}
+      .settings
+        h3 Settings
+        .form-input
+          label(for="dyn_range") Dynamic Range:
+          select#dyn_range(name="dynamic_range" required)
+            option(value="") --Please select Dynamic Range--
+            for dyn_range in ["DR-Auto", "DR100", "DR200", "DR400"]
+              if recipe === undefined || recipe.settings.dynamic_range !== dyn_range
+                option(value=dyn_range) #{dyn_range}
+              else
+                option(value=dyn_range selected) #{dyn_range}
+        .form-input 
+          label(for="grain") Grain:
+          select#grain(name="grain" required)
+            option(value="") --Please select Grain setting--
+            for grain in ["Off", "Strong Small", "Strong Large", "Weak Small", "Weak Large", "Strong", "Weak"]
+              if recipe === undefined || recipe.settings.grain !== grain
+                option(value=grain) #{grain}
+              else
+                option(value=grain selected) #{grain}  
+        .color-fx
+          .form-input
+            label(for="ccfx") Color Chrome Effect:
+            select#ccfx(name="ccfx" required)
+              option(value="") --Please select Color Chrome setting--
+              for fx in ["Strong", "Weak", "Off"]
+                if recipe === undefined || recipe.settings.ccfx !== fx
+                  option(value=fx) #{fx}
+                else
+                  option(value=fx selected) #{fx}
+          .form-input
+            label(for="ccfx_blue") Color Chrome Effect Blue:
+            select#ccfx_blue(name="ccfx_blue" required)
+              option(value="") --Please select Color Chrome Blue setting--
+              for fx in ["Strong", "Weak", "Off"]
+                if recipe === undefined || recipe.settings.ccfx_blue !== fx
+                  option(value=fx) #{fx}
+                else
+                  option(value=fx selected) #{fx}
+        .hs-curve
+          .form-input
+            label(for="highlight") Highlight:
+            input#highlight(type="number" name="highlight" min=-2 max=4 step=0.5 
+              required value=(recipe === undefined ? null : recipe.settings.highlight))
+          .form-input
+            label(for="shadow") Shadow:
+            input#shadow(type="number" name="shadow" min=-2 max=4 step=0.5
+              required value=(recipe === undefined ? null : recipe.settings.shadow))
+        .white-balance
+          .form-input
+            label(for="style") Style:
+            input#style(type="text" name="style" required
+              value=(recipe === undefined ? "" : recipe.settings.white_balance.style))
+          .form-input
+            label(for="red") Red:
+            input#red(type="number" name="red" min="-8" max="8"
+              required value=(recipe === undefined ? null : recipe.settings.white_balance.shift.red))
+          .form-input
+            label(for="blue") Blue:
+            input#blue(type="number" name="blue" min="-8" max="8"
+              required value=(recipe === undefined ? null : recipe.settings.white_balance.shift.blue))
+        .noise-settings
+          .form-input
+            label(for="sharpness") Sharpness:
+            input#sharpness(type="number" name="sharpness" min="-4" max="4"
+              required value=(recipe === undefined ? null : recipe.settings.sharpness))
+          .form-input
+            label(for="nr") NR:
+            input#nr(type="number" name="nr" min="-4" max="4"
+              required value=(recipe === undefined ? null : recipe.settings.noise_reduction))
+          .form-input
+            label(for="clarity") Clarity:
+            input#clarity(type="number" name="clarity" min="-5" max="5"
+              required value=(recipe === undefined ? null : recipe.settings.clarity))
+        .form-input
+            label(for="iso") ISO:
+            input#iso(type="number" min="100" max="13200" step="5"
+              required value=(recipe === undefined ? null : recipe.settings.iso))
+        .form-input
+            label(for="sharpness") Sharpness:
+            input#sharpness(type="number" min="-4" max="4"
+              required value=(recipe === undefined ? null : recipe.settings.sharpness))
+        .exp-comp
+          p Exposure Compensation:
+          .form-input
+            label(for="min") Min:
+            input#min(type="text" name="min" required
+              value=(recipe === undefined ? "" : recipe.settings.exposure_compensation.min))
+          .form-input
+            label(for="max") Max:
+            input#max(type="text" name="max" required
+              value=(recipe === undefined ? "" : recipe.settings.exposure_compensation.max))
+      .source
+        .form-input
+          label(for="source") Source:
+          select#source(name="source" required)
+            option(value="") --Please select a source--
+            for source in source_list
+              if recipe
+                if source._id.toString() === recipe.source._id.toString()
+                  option(value=source._id selected) #{source.name}
+                else
+                  option(value=source._id) #{source.name}
+              else
+                option(value=source._id) #{source.name}
+      .reference
+        .form-input
+          label(for="reflink") Reference Link:
+          input#reflink(type="text" name="reflink"
+            value=(recipe === undefined ? "" : recipe.reference_url))
+      button(type="submit") Submit

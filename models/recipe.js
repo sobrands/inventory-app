@@ -44,7 +44,7 @@ const RecipeSchema = new Schema({
       max: { type: String, required: true }
     }
   },
-  source: { type: Schema.Types.ObjectId, ref: "Source" },
+  source: { type: Schema.Types.ObjectId, ref: "Source" , required: true},
   reference_url: String
 });
 

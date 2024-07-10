@@ -38,6 +38,9 @@ router.post("/film-sim/:id/delete", filmSimController.deletePost);
 
 // RECIPE ROUTES //
 
+// Get create form
+router.get("/recipe/create", recipeController.createGet);
+
 // Display list of recipes
 router.get("/recipes", recipeController.index);
 

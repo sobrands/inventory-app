@@ -1,4 +1,7 @@
 const Recipe = require("../models/recipe");
+const Source = require("../models/source");
+const FilmSim = require("../models/film-sim");
+
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
@@ -23,3 +26,16 @@ exports.detail = asyncHandler(async (req, res, next) => {
     recipe: recipe
   });
 });
+
+exports.createGet = asyncHandler(async (req, res, next) => {
+  const [sources, filmsims] = await Promise.all([
+    Source.find({}, "name").sort({ name: 1 }).exec(),
+    FilmSim.find({}, "name").sort({ name: 1 }).exec()
+  ]);
+
+  res.render("recipe_form", {
+    title: "Create Recipe",
+    source_list: sources,
+    filmsim_list: filmsims
+  });
+})
