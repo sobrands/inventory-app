@@ -40,8 +40,8 @@ const RecipeSchema = new Schema({
     clarity: { type: Number, required: true },
     iso: { type: Number, required: true },
     exposure_compensation: {
-      min: { type: String, required: true },
-      max: { type: String, required: true }
+      min: String,
+      max: String
     }
   },
   source: { type: Schema.Types.ObjectId, ref: "Source" , required: true},

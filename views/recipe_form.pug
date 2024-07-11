@@ -5,6 +5,10 @@ block content
     h1 #{title}
     form(method="POST")
       .form-input
+        label(for="name") Name:
+        input#name(type="text" name="name" required
+          value=(recipe === undefined ? "" : recipe.name))
+      .form-input
         label(for="film_sim") Film Simulation:
         select#film_sim(name="film_sim" required)
           option(value="") --Please select a Film Simulation--
@@ -66,7 +70,7 @@ block content
               required value=(recipe === undefined ? null : recipe.settings.shadow))
         .white-balance
           .form-input
-            label(for="style") Style:
+            label(for="style") White Balance Style:
             input#style(type="text" name="style" required
               value=(recipe === undefined ? "" : recipe.settings.white_balance.style))
           .form-input
@@ -91,22 +95,18 @@ block content
             input#clarity(type="number" name="clarity" min="-5" max="5"
               required value=(recipe === undefined ? null : recipe.settings.clarity))
         .form-input
-            label(for="iso") ISO:
-            input#iso(type="number" min="100" max="13200" step="5"
+            label(for="iso") ISO (Up to):
+            input#iso(type="number" name="iso" min="100" max="13200" step="5"
               required value=(recipe === undefined ? null : recipe.settings.iso))
-        .form-input
-            label(for="sharpness") Sharpness:
-            input#sharpness(type="number" min="-4" max="4"
-              required value=(recipe === undefined ? null : recipe.settings.sharpness))
         .exp-comp
           p Exposure Compensation:
           .form-input
             label(for="min") Min:
-            input#min(type="text" name="min" required
+            input#min(type="text" name="min"
               value=(recipe === undefined ? "" : recipe.settings.exposure_compensation.min))
           .form-input
             label(for="max") Max:
-            input#max(type="text" name="max" required
+            input#max(type="text" name="max"
               value=(recipe === undefined ? "" : recipe.settings.exposure_compensation.max))
       .source
         .form-input
@@ -127,3 +127,8 @@ block content
           input#reflink(type="text" name="reflink"
             value=(recipe === undefined ? "" : recipe.reference_url))
       button(type="submit") Submit
+  
+    if errors
+        ul
+          for error in errors
+            li!= error.msg

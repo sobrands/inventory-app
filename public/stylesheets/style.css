@@ -128,6 +128,7 @@ nav a:hover {
 .exp-comp {
   display: flex;
   gap: 1.5rem;
+  align-items: center;
 }
 
 a.create {
