@@ -1,11 +1,19 @@
-const FilmSim = require("../models/film-sim");
-const Recipe = require("../models/recipe");
+const dbFilmSim = require("../db/filmsimQueries");
+const dbRecipe = require("../db/recipeQueries");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 // Display list of Film Simulation  
 exports.index = asyncHandler(async (req, res, next) => {
-  const filmSims = await FilmSim.find().sort({ name: 1 }).exec();
+  const result = await dbFilmSim.getAllFilmSims();
+
+  // Add url to list
+  const filmSims = result.map((filmsim) => {
+    return {
+      ...filmsim,
+      url: `/film-sim/${filmsim.id}`
+    }
+  });
 
   res.render("filmsim_list", {
     title: "Film Simulations",
@@ -16,20 +24,28 @@ exports.index = asyncHandler(async (req, res, next) => {
 // Display recipes per Film Simulation
 exports.detail = asyncHandler(async (req, res, next) => {
   const [filmSim, recipesByFilmSim] = await Promise.all([
-    FilmSim.findById(req.params.id),
-    Recipe.find({ film_sim: req.params.id }, "name").sort({ name: 1 }).exec()
+    dbFilmSim.getFilmSimById(req.params.id),
+    dbRecipe.getRecipesFromFilmSim(req.params.id)
   ]);
 
-  if (filmSim === null) {
+  if (filmSim.length === 0) {
     const err = new Error("Film simulation not found!");
     err.status = 400;
     return next(err);
   }
+
+  // Add url to recipes
+  const recipes = recipesByFilmSim.map((recipe) => {
+    return {
+      ...recipe,
+      url: `/recipe/${recipe.id}`
+    }
+  });
   
   res.render("filmsim_detail", {
-    title: filmSim.name,
-    film_sim: filmSim,
-    recipe_list: recipesByFilmSim
+    title: filmSim[0].name,
+    film_sim: filmSim[0],
+    recipe_list: recipes
   });
 });
 
@@ -51,7 +67,7 @@ exports.createPost = [
     const errors = validationResult(req);
 
     // Create new film-sim object
-    const filmSim = new FilmSim({ name: req.body.name })
+    const filmSim = { name: req.body.name };
 
     if (!errors.isEmpty()) {
       // Render form again with sanitized values/error messages
@@ -62,26 +78,17 @@ exports.createPost = [
       });
       return;
     } else {
-      // Check if filmsim already exists
-      const filmSimExists = await FilmSim.findOne({ name: req.body.name })
-        .collation({ locale: "en", strength: 2 })
-        .exec();
-      
-      if (filmSimExists) {
-        res.redirect(filmSimExists.url);
-      } else {
-        await filmSim.save();
-        res.redirect(filmSim.url);
-      }
+      await dbFilmSim.createFilmSim(filmSim);
+      res.redirect("/film-sims");
     }
   })
 ];
 
 exports.updateGet = asyncHandler(async (req, res, next) => {
-  const filmSim = await FilmSim.findById(req.params.id).exec();
+  const filmSim = await dbFilmSim.getFilmSimById(req.params.id);
 
   // Handle no results
-  if (filmSim === null) {
+  if (filmSim.length === 0) {
     const err = new Error("Film Simulation not found!");
     err.status = 404;
     return next(err);
@@ -89,7 +96,7 @@ exports.updateGet = asyncHandler(async (req, res, next) => {
 
   res.render("filmsim_form", {
     title: "Update Film Simulation",
-    film_sim: filmSim
+    film_sim: filmSim[0]
   });
 });
 
@@ -105,10 +112,9 @@ exports.updatePost = [
     const errors = validationResult(req);
 
     // Create new film-sim object
-    const filmSim = new FilmSim({ 
+    const filmSim = { 
       name: req.body.name,
-      _id: req.params.id
-    });
+    };
 
     if (!errors.isEmpty()) {
       // Render form again with sanitized values/error messages
@@ -119,49 +125,65 @@ exports.updatePost = [
       });
       return;
     } else {
-        const updatedFilmSim = await FilmSim.findByIdAndUpdate(req.params.id, filmSim, {});
-        res.redirect(updatedFilmSim.url);
+        await dbFilmSim.updateFilmSim(req.params.id, filmSim);
+        res.redirect(`/film-sim/${req.params.id}`);
     }
   })
 ];
 
 exports.deleteGet = asyncHandler(async (req, res, next) => {
   const [filmSim, recipesByFilmSim] = await Promise.all([
-    FilmSim.findById(req.params.id).exec(),
-    Recipe.find({ film_sim: req.params.id }, "name").sort({ name: 1 }).exec()
+    dbFilmSim.getFilmSimById(req.params.id),
+    dbRecipe.getRecipesFromFilmSim(req.params.id)
   ]);
 
-  if (filmSim === null) {
+  if (filmSim.length === 0) {
     res.redirect("/film-sims");
   }
 
+  // Populate recipes with url
+  const recipes = recipesByFilmSim.map((recipe) => {
+    return {
+      ...recipe,
+      url: `/recipe/${recipe.id}`
+    }
+  });
+
   res.render("filmsim_delete", {
     title: "Delete Film Simulation",
-    film_sim: filmSim,
-    recipe_list: recipesByFilmSim
+    film_sim: filmSim[0],
+    recipe_list: recipes
   });
 });
 
 exports.deletePost = asyncHandler(async (req, res, next) => {
   const [filmSim, recipesByFilmSim] = await Promise.all([
-    FilmSim.findById(req.params.id).exec(),
-    Recipe.find({ film_sim: req.params.id }, "name").sort({ name: 1 }).exec()
+    dbFilmSim.getFilmSimById(req.params.id),
+    dbRecipe.getRecipesFromFilmSim(req.params.id)
   ]);
 
-  if (filmSim === null) {
+  if (filmSim.length === 0) {
     res.redirect("/film-sims");
   }
 
-  if (recipesByFilmSim.length > 0) {
+  // Populate recipes with url
+  const recipes = recipesByFilmSim.map((recipe) => {
+    return {
+      ...recipe,
+      url: `/recipe/${recipe.id}`
+    }
+  });
+
+  if (recipes.length > 0) {
     res.render("filmsim_delete", {
       title: "Delete Film Simulation",
-      film_sim: filmSim,
-      recipe_list: recipesByFilmSim
+      film_sim: filmSim[0],
+      recipe_list: recipes
     });
     return;
   } else {
     // Delete Film Simulation
-    await FilmSim.findByIdAndDelete(req.body.filmsimid);
+    await dbFilmSim.deleteFilmSim(req.body.filmsimid);
     res.redirect("/film-sims");
   }
 });

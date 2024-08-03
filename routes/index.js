@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// const filmSimController = require("../controllers/filmSimController");
+const filmSimController = require("../controllers/filmSimController");
 // const recipeController = require("../controllers/recipeController");
 const sourceController = require("../controllers/sourceController");
 
@@ -12,29 +12,29 @@ router.get('/', function(req, res, next) {
 
 // FILM SIMULATION ROUTES //
 
-// // Get create form
-// router.get("/film-sim/create", filmSimController.createGet);
+// Get create form
+router.get("/film-sim/create", filmSimController.createGet);
 
-// // Submit create form
-// router.post("/film-sim/create", filmSimController.createPost);
+// Submit create form
+router.post("/film-sim/create", filmSimController.createPost);
 
-// // Get Film Sim list
-// router.get("/film-sims", filmSimController.index);
+// Get Film Sim list
+router.get("/film-sims", filmSimController.index);
 
-// // Get recipes per film sim
-// router.get("/film-sim/:id", filmSimController.detail);
+// Get recipes per film sim
+router.get("/film-sim/:id", filmSimController.detail);
 
-// // Get update form
-// router.get("/film-sim/:id/update", filmSimController.updateGet);
+// Get update form
+router.get("/film-sim/:id/update", filmSimController.updateGet);
 
-// // Submit update form
-// router.post("/film-sim/:id/update", filmSimController.updatePost);
+// Submit update form
+router.post("/film-sim/:id/update", filmSimController.updatePost);
 
-// // Get delete form
-// router.get("/film-sim/:id/delete", filmSimController.deleteGet);
+// Get delete form
+router.get("/film-sim/:id/delete", filmSimController.deleteGet);
 
-// // Submit delete form
-// router.post("/film-sim/:id/delete", filmSimController.deletePost);
+// Submit delete form
+router.post("/film-sim/:id/delete", filmSimController.deletePost);
 
 // // RECIPE ROUTES //
 
@@ -44,7 +44,7 @@ router.get('/', function(req, res, next) {
 // // Submit create form
 // router.post("/recipe/create", recipeController.createPost);
 
-// // Display list of recipes
+// Display list of recipes
 // router.get("/recipes", recipeController.index);
 
 // // Display recipe details

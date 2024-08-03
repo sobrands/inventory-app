@@ -10,6 +10,18 @@ async function getRecipesFromSource(sourceId) {
   return rows;
 }
 
+async function getRecipesFromFilmSim(filmsimId) {
+  const { rows } = await pool.query(`
+    SELECT r.id, r.name
+    FROM recipes r 
+    JOIN film_sims f ON r.film_sim = f.id
+    WHERE f.id = ($1);
+  `, [filmsimId]);
+  return rows;
+}
+
 module.exports = {
   getRecipesFromSource,
+  getRecipesFromFilmSim,
+  
 }
