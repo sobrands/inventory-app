@@ -1,11 +1,17 @@
-const Source = require("../models/source");
-const Recipe = require("../models/recipe");
+const dbSource = require("../db/sourceQueries");
+const dbRecipe = require("../db/recipeQueries");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 // Display list of sources  
 exports.index = asyncHandler(async (req, res, next) => {
-  const sources = await Source.find().sort({ name: 1 }).exec();
+  const result = await dbSource.getAllSources();
+  const sources = result.map((source) => {
+    return {
+      ...source,
+      url: `/source/${source.id}`
+    };
+  });
 
   res.render("source_list", {
     title: "Sources",
@@ -15,21 +21,29 @@ exports.index = asyncHandler(async (req, res, next) => {
 
 // Display recipes belonging to source
 exports.detail = asyncHandler(async (req, res, next) => {
-  const [source, recipesBySource] = await Promise.all([
-    Source.findById(req.params.id),
-    Recipe.find({ source: req.params.id }, "name").sort({ name: 1 }).exec()
+  const [ source, recipesBySource ] = await Promise.all([
+    dbSource.getSourceById(req.params.id),
+    dbRecipe.getRecipesFromSource(req.params.id)
   ]);
 
-  if (source === null) {
+  if (source.length === 0) {
     const err = new Error("Source not found!");
     err.status = 404;
     return next(err);
   }
 
+  // Populate recipe with its url
+  const recipes = recipesBySource.map((recipe) => {
+    return {
+      ...recipe,
+      url: `/recipe/${recipe.id}`
+    };
+  });
+
   res.render("source_detail", {
-    title: source.name,
-    source: source,
-    recipe_list: recipesBySource
+    title: source[0].name,
+    source: source[0],
+    recipe_list: recipes
   });
 });
 
@@ -52,10 +66,10 @@ exports.createPost = [
     const errors = validationResult(req);
 
     // Create new source object
-    const source = new Source({
+    const source = {
       name: req.body.name,
       description: req.body.description
-    });
+    };
 
     if (!errors.isEmpty()) {
       // Render form again with sanitized values/error messages
@@ -66,26 +80,17 @@ exports.createPost = [
       });
       return;
     } else {
-      // Check if filmsim already exists
-      const sourceExists = await Source.findOne({ name: req.body.name })
-        .collation({ locale: "en", strength: 2 })
-        .exec();
-      
-      if (sourceExists) {
-        res.redirect(sourceExists.url);
-      } else {
-        await source.save();
-        res.redirect(source.url);
+        await dbSource.createSource(source);
+        res.redirect("/sources");
       }
-    }
-  })
+    })
 ];
 
 // Display form to update source
 exports.updateGet = asyncHandler(async (req, res, next) => {
-  const source = await Source.findById(req.params.id).exec();
+  const source = await dbSource.getSourceById(req.params.id);
 
-  if (source === null) {
+  if (source.length === 0) {
     const err = new Error("Source cannot be found!");
     err.status = 404;
     return next(err);
@@ -93,7 +98,7 @@ exports.updateGet = asyncHandler(async (req, res, next) => {
 
   res.render("source_form", {
     title: "Update Source",
-    source: source
+    source: source[0]
   });
 });
 
@@ -111,11 +116,10 @@ exports.updatePost = [
     const errors = validationResult(req);
 
     // Create new source object
-    const source = new Source({
+    const source = {
       name: req.body.name,
       description: req.body.description,
-      _id: req.params.id
-    });
+    };
 
     if (!errors.isEmpty()) {
       // Render form again with sanitized values/error messages
@@ -126,48 +130,64 @@ exports.updatePost = [
       });
       return;
     } else {
-      const updatedSource = await Source.findByIdAndUpdate(req.params.id, source, {});
-      res.redirect(updatedSource.url);
+      await dbSource.updateSource(req.params.id, source);
+      res.redirect(`/source/${req.params.id}`);
     }
   })
 ];
 
 exports.deleteGet = asyncHandler(async (req, res, next) => {
-  const [source, recipesBySource] = await Promise.all([
-    Source.findById(req.params.id).exec(),
-    Recipe.find({ source: req.params.id }, "name").sort({ name: 1 }).exec()
+  const [ source, recipesBySource ] = await Promise.all([
+    dbSource.getSourceById(req.params.id),
+    dbRecipe.getRecipesFromSource(req.params.id)
   ]);
 
-  if (source === null) {
+  if (source.length === 0) {
     res.redirect("/sources");
   }
 
+  // Populate recipe with its url
+  const recipes = recipesBySource.map((recipe) => {
+    return {
+      ...recipe,
+      url: `/recipe/${recipe.id}`
+    };
+  });
+
   res.render("source_delete", {
     title: "Delete Source",
-    source: source,
-    recipe_list: recipesBySource
+    source: source[0],
+    recipe_list: recipes
   });
 });
 
 exports.deletePost = asyncHandler(async (req, res, next) => {
-  const [source, recipesBySource] = await Promise.all([
-    Source.findById(req.params.id).exec(),
-    Recipe.find({ source: req.params.id }, "name").sort({ name: 1 }).exec()
+  const [ source, recipesBySource ] = await Promise.all([
+    dbSource.getSourceById(req.params.id),
+    dbRecipe.getRecipesFromSource(req.params.id)
   ]);
 
-  if (source === null) {
+  if (source.length === 0) {
     res.redirect("/sources");
   }
 
-  if (recipesBySource.length > 0) {
+  // Populate recipe with its url
+  const recipes = recipesBySource.map((recipe) => {
+    return {
+      ...recipe,
+      url: `/recipe/${recipe.id}`
+    };
+  });
+
+  if (recipes.length > 0) {
     res.render("source_delete", {
       title: "Delete Source",
-      source: source,
-      recipe_list: recipesBySource
+      source: source[0],
+      recipe_list: recipes
     });
     return;
   } else {
-    await Source.findByIdAndDelete(req.body.sourceid);
+    await dbSource.deleteSource(req.body.sourceid);
     res.redirect("/sources");
   }
 });
