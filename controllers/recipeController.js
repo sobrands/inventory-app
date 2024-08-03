@@ -1,13 +1,21 @@
-const Recipe = require("../models/recipe");
-const Source = require("../models/source");
-const FilmSim = require("../models/film-sim");
+const dbRecipe = require("../db/recipeQueries");
+const dbSource = require("../db/sourceQueries");
+const dbFilmSim = require("../db/filmsimQueries");
 
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 // Display list of Film Simulation  
 exports.index = asyncHandler(async (req, res, next) => {
-  const recipes = await Recipe.find().sort({ name: 1 }).exec();
+  const result = await dbRecipe.getAllRecipes();
+
+  // Populate recipes with url
+  const recipes = result.map((recipe) => {
+    return {
+      ...recipe,
+      url: `/recipe/${recipe.id}`
+    };
+  });
 
   res.render("recipe_list", {
     title: "Recipes",
@@ -16,10 +24,14 @@ exports.index = asyncHandler(async (req, res, next) => {
 });
 
 exports.detail = asyncHandler(async (req, res, next) => {
-  const recipe = await Recipe
-    .findById(req.params.id)
-    .populate("film_sim")
-    .populate("source", "name");
+  const result = await dbRecipe.getRecipeById(req.params.id);
+
+  // Populate url
+  const recipe = {
+    ...result[0],
+    film_sim_url: `/film-sim/${result[0].film_sim}`,
+    source_url: `/source/${result[0].source}`
+  }
 
   res.render("recipe_detail", {
     title: recipe.name,
@@ -29,8 +41,8 @@ exports.detail = asyncHandler(async (req, res, next) => {
 
 exports.createGet = asyncHandler(async (req, res, next) => {
   const [sources, filmsims] = await Promise.all([
-    Source.find({}, "name").sort({ name: 1 }).exec(),
-    FilmSim.find({}, "name").sort({ name: 1 }).exec()
+    dbSource.getAllSources(),
+    dbFilmSim.getAllFilmSims()
   ]);
 
   res.render("recipe_form", {
@@ -127,40 +139,32 @@ exports.createPost = [
     const errors = validationResult(req);
 
     // Create new recipe object
-    const recipe = new Recipe({
+    const recipe = {
       name: req.body.name,
       film_sim: req.body.film_sim,
-      settings: {
-        dynamic_range: req.body.dynamic_range,
-        grain: req.body.grain,
-        ccfx: req.body.ccfx,
-        ccfx_blue: req.body.ccfx_blue,
-        white_balance: {
-          style: req.body.style,
-          shift: {
-            red: req.body.red,
-            blue: req.body.blue
-          }
-        },
-        highlight: req.body.highlight,
-        shadow: req.body.shadow,
-        sharpness: req.body.sharpness,
-        noise_reduction: req.body.nr,
-        clarity: req.body.clarity,
-        iso: req.body.iso,
-        exposure_compensation: {
-          min: req.body.min,
-          max: req.body.max
-        }
-      },
+      dynamic_range: req.body.dynamic_range,
+      grain: req.body.grain,
+      ccfx: req.body.ccfx,
+      ccfx_blue: req.body.ccfx_blue,
+      wb_style: req.body.style,
+      wb_shift_red: req.body.red,
+      wb_shift_blue: req.body.blue,
+      highlight: req.body.highlight,
+      shadow: req.body.shadow,
+      sharpness: req.body.sharpness,
+      noise_reduction: req.body.nr,
+      clarity: req.body.clarity,
+      iso: req.body.iso,
+      exposure_compensation_min: req.body.min,
+      exposure_compensation_max: req.body.max,
       source: req.body.source,
       reference_url: req.body.reflink
-    });
+    };
 
     if (!errors.isEmpty()) {
       const [sources, filmsims] = await Promise.all([
-        Source.find({}, "name").sort({ name: 1 }).exec(),
-        FilmSim.find({}, "name").sort({ name: 1 }).exec()
+        dbSource.getAllSources(),
+        dbFilmSim.getAllFilmSims()
       ]);
 
       // Render form with sanitized values/error messages
@@ -173,8 +177,8 @@ exports.createPost = [
       });
       return;
     } else {
-      await recipe.save();
-      res.redirect(recipe.url);
+      await dbRecipe.createRecipe(recipe);
+      res.redirect("/recipes");
     }
   })
 ];
@@ -185,15 +189,12 @@ exports.updateGet = asyncHandler(async (req, res, next) => {
     filmsims,
     recipe
   ] = await Promise.all([
-    Source.find({}, "name").sort({ name: 1 }).exec(),
-    FilmSim.find({}, "name").sort({ name: 1 }).exec(),
-    Recipe.findById(req.params.id)
-      .populate("film_sim")
-      .populate("source")
-      .exec()
+    dbSource.getAllSources(),
+    dbFilmSim.getAllFilmSims(),
+    dbRecipe.getRecipeById(req.params.id)
   ]);
 
-  if (recipe === null) {
+  if (recipe.length === 0) {
     const err = new Error("Recipe cannot be found!");
     err.status = 404;
     return next(err);
@@ -201,7 +202,7 @@ exports.updateGet = asyncHandler(async (req, res, next) => {
 
   res.render("recipe_form", {
     title: "Update Recipe",
-    recipe: recipe,
+    recipe: recipe[0],
     source_list: sources,
     filmsim_list: filmsims
   });
@@ -294,41 +295,32 @@ exports.updatePost = [
     const errors = validationResult(req);
 
     // Create new recipe object
-    const recipe = new Recipe({
-      _id: req.params.id,
+    const recipe = {
       name: req.body.name,
       film_sim: req.body.film_sim,
-      settings: {
-        dynamic_range: req.body.dynamic_range,
-        grain: req.body.grain,
-        ccfx: req.body.ccfx,
-        ccfx_blue: req.body.ccfx_blue,
-        white_balance: {
-          style: req.body.style,
-          shift: {
-            red: req.body.red,
-            blue: req.body.blue
-          }
-        },
-        highlight: req.body.highlight,
-        shadow: req.body.shadow,
-        sharpness: req.body.sharpness,
-        noise_reduction: req.body.nr,
-        clarity: req.body.clarity,
-        iso: req.body.iso,
-        exposure_compensation: {
-          min: req.body.min,
-          max: req.body.max
-        }
-      },
+      dynamic_range: req.body.dynamic_range,
+      grain: req.body.grain,
+      ccfx: req.body.ccfx,
+      ccfx_blue: req.body.ccfx_blue,
+      wb_style: req.body.style,
+      wb_shift_red: req.body.red,
+      wb_shift_blue: req.body.blue,
+      highlight: req.body.highlight,
+      shadow: req.body.shadow,
+      sharpness: req.body.sharpness,
+      noise_reduction: req.body.nr,
+      clarity: req.body.clarity,
+      iso: req.body.iso,
+      exposure_compensation_min: req.body.min,
+      exposure_compensation_max: req.body.max,
       source: req.body.source,
       reference_url: req.body.reflink
-    });
+    };
 
     if (!errors.isEmpty()) {
       const [sources, filmsims] = await Promise.all([
-        Source.find({}, "name").sort({ name: 1 }).exec(),
-        FilmSim.find({}, "name").sort({ name: 1 }).exec()
+        dbSource.getAllSources(),
+        dbFilmSim.getAllFilmSims(),
       ]);
 
       // Render form with sanitized values/error messages
@@ -341,32 +333,32 @@ exports.updatePost = [
       });
       return;
     } else {
-      const updatedRecipe = await Recipe.findByIdAndUpdate(req.params.id, recipe, {});
-      res.redirect(updatedRecipe.url);
+      await dbRecipe.updateRecipe(req.params.id, recipe);
+      res.redirect(`/recipe/${req.params.id}`);
     }
   })
 ]
 
 exports.deleteGet = asyncHandler(async (req, res, next) => {
-  const recipe = await Recipe.findById(req.params.id).exec();
+  const recipe = await dbRecipe.getRecipeById(req.params.id);
 
-  if (recipe === null) {
+  if (recipe.length === 0) {
     res.redirect("/recipes");
   }
 
   res.render("recipe_delete", { 
     title: "Delete Recipe",
-    recipe: recipe
+    recipe: recipe[0]
   });
 });
 
 exports.deletePost = asyncHandler(async (req, res, next) => {
-  const recipe = await Recipe.findById(req.params.id).exec();
+  const recipe = await dbRecipe.getRecipeById(req.params.id);
 
-  if (recipe === null) {
+  if (recipe.length === 0) {
     res.redirect("/recipes");
   } else {
-    await Recipe.findByIdAndDelete(req.body.recipeid);
+    await dbRecipe.deleteRecipe(req.body.recipeid);
     res.redirect("/recipes");
   }
 });

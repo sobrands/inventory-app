@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const filmSimController = require("../controllers/filmSimController");
-// const recipeController = require("../controllers/recipeController");
+const recipeController = require("../controllers/recipeController");
 const sourceController = require("../controllers/sourceController");
 
 /* GET home page. */
@@ -36,35 +36,35 @@ router.get("/film-sim/:id/delete", filmSimController.deleteGet);
 // Submit delete form
 router.post("/film-sim/:id/delete", filmSimController.deletePost);
 
-// // RECIPE ROUTES //
+// RECIPE ROUTES //
 
-// // Get create form
-// router.get("/recipe/create", recipeController.createGet);
+// Get create form
+router.get("/recipe/create", recipeController.createGet);
 
-// // Submit create form
-// router.post("/recipe/create", recipeController.createPost);
+// Submit create form
+router.post("/recipe/create", recipeController.createPost);
 
 // Display list of recipes
-// router.get("/recipes", recipeController.index);
+router.get("/recipes", recipeController.index);
 
-// // Display recipe details
-// router.get("/recipe/:id", recipeController.detail);
+// Display recipe details
+router.get("/recipe/:id", recipeController.detail);
 
-// // Get update form
-// router.get("/recipe/:id/update", recipeController.updateGet);
+// Get update form
+router.get("/recipe/:id/update", recipeController.updateGet);
 
-// // Submit update form
-// router.post("/recipe/:id/update", recipeController.updatePost);
+// Submit update form
+router.post("/recipe/:id/update", recipeController.updatePost);
 
-// // Get delete form
-// router.get("/recipe/:id/delete", recipeController.deleteGet);
+// Get delete form
+router.get("/recipe/:id/delete", recipeController.deleteGet);
 
-// // Submit delete form
-// router.post("/recipe/:id/delete", recipeController.deletePost);
+// Submit delete form
+router.post("/recipe/:id/delete", recipeController.deletePost);
 
-// // SOURCE ROUTES //
+// SOURCE ROUTES //
 
-// // Get create form
+// Get create form
 router.get("/source/create", sourceController.createGet);
 
 // Submit create form

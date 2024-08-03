@@ -5,30 +5,30 @@ block content
     h1= title
     .film-sim
       h3 Film Simulation
-      a(href=recipe.film_sim.url) #{recipe.film_sim.name}
+      a(href=recipe.film_sim_url) #{recipe.film_sim_name}
     .settings
       h3 Settings
-      p Dynamic Range: #{recipe.settings.dynamic_range}
-      p Grain: #{recipe.settings.grain}
+      p Dynamic Range: #{recipe.dynamic_range}
+      p Grain: #{recipe.grain}
       .color-fx
-        p Color Chrome FX: #{recipe.settings.ccfx}
-        p Color Chrome FX Blue: #{recipe.settings.ccfx_blue}
+        p Color Chrome FX: #{recipe.ccfx}
+        p Color Chrome FX Blue: #{recipe.ccfx_blue}
       .hs-curve
-        p Highlight: #{recipe.settings.highlight > 0 ? "+" + recipe.settings.highlight : recipe.settings.highlight}
-        p Shadow: #{recipe.settings.shadow > 0 ? "+" + recipe.settings.shadow : recipe.settings.shadow}
+        p Highlight: #{recipe.highlight > 0 ? "+" + recipe.highlight : recipe.highlight}
+        p Shadow: #{recipe.shadow > 0 ? "+" + recipe.shadow : recipe.shadow}
       .white-balance
-        p White Balance: #{recipe.settings.white_balance.style}
-        p R:#{recipe.settings.white_balance.shift.red > 0 ? "+" + recipe.settings.white_balance.shift.red : recipe.settings.white_balance.shift.red}      
-          | &nbsp;B:#{recipe.settings.white_balance.shift.blue > 0 ? "+" + recipe.settings.white_balance.shift.blue : recipe.settings.white_balance.shift.blue}
+        p White Balance: #{recipe.wb_style}
+        p R:#{recipe.wb_shift_red > 0 ? "+" + recipe.wb_shift_red : recipe.wb_shift_red}      
+          | &nbsp;B:#{recipe.wb_shift_blue > 0 ? "+" + recipe.wb_shift_blue : recipe.wb_shift_blue}
       .noise-settings
-        p Sharpness: #{recipe.settings.sharpness > 0 ? "+" + recipe.settings.sharpness : recipe.settings.sharpness}
-        p Noise Reduction: #{recipe.settings.noise_reduction > 0 ? "+" + recipe.settings.noise_reduction : recipe.settings.noise_reduction}
-        p Clarity: #{recipe.settings.clarity > 0 ? "+" + recipe.settings.clarity : recipe.settings.clarity}
-      p ISO: Up to #{recipe.settings.iso}
-      p Exposure Comp: #{recipe.settings.exposure_compensation.min} to #{recipe.settings.exposure_compensation.max}
+        p Sharpness: #{recipe.sharpness > 0 ? "+" + recipe.sharpness : recipe.sharpness}
+        p Noise Reduction: #{recipe.noise_reduction > 0 ? "+" + recipe.noise_reduction : recipe.noise_reduction}
+        p Clarity: #{recipe.clarity > 0 ? "+" + recipe.clarity : recipe.clarity}
+      p ISO: Up to #{recipe.iso}
+      p Exposure Comp: #{recipe.exposure_compensation_min} to #{recipe.exposure_compensation_max}
     .source
       h3 Source
-      a(href=recipe.source.url) #{recipe.source.name}
+      a(href=recipe.source_url) #{recipe.source_name}
     .reference
       h3 Reference Link
       if recipe.reference_url
@@ -36,5 +36,5 @@ block content
       else
         p No reference link
     .action-buttons
-      a(href=`/recipe/${recipe._id}/update`) Update Recipe
-      a(href=`/recipe/${recipe._id}/delete`) Delete Recipe
+      a(href=`/recipe/${recipe.id}/update`) Update Recipe
+      a(href=`/recipe/${recipe.id}/delete`) Delete Recipe
